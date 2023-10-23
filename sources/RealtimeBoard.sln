@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Websocket.Server", "Websocket.Server\Websocket.Server.csproj", "{D427D1E4-0CDC-4E30-8738-90809171D7A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stomp.Relay", "Stomp.Relay\Stomp.Relay.csproj", "{EA36737A-ACA5-475A-88CB-4152C41448D1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D427D1E4-0CDC-4E30-8738-90809171D7A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D427D1E4-0CDC-4E30-8738-90809171D7A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D427D1E4-0CDC-4E30-8738-90809171D7A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D427D1E4-0CDC-4E30-8738-90809171D7A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50E9B7AF-A1C2-49D6-9846-664F8F72A5FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50E9B7AF-A1C2-49D6-9846-664F8F72A5FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50E9B7AF-A1C2-49D6-9846-664F8F72A5FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50E9B7AF-A1C2-49D6-9846-664F8F72A5FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA36737A-ACA5-475A-88CB-4152C41448D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA36737A-ACA5-475A-88CB-4152C41448D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA36737A-ACA5-475A-88CB-4152C41448D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA36737A-ACA5-475A-88CB-4152C41448D1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
