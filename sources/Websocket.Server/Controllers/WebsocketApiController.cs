@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Stomp.Relay;
 
 using Websocket.Server.Dto;
+using Websocket.Server.Services;
 
 namespace Websocket.Server.Controllers;
 
@@ -11,20 +12,21 @@ public class WebsocketApiController
 {
     private readonly ILogger<WebsocketApiController> _logger;
     private readonly IStompPublisher _stompPublisher;
+    private readonly IBoardService _boardService;
 
-    public WebsocketApiController(ILogger<WebsocketApiController> logger, IStompPublisher stompPublisher)
+    public WebsocketApiController(ILogger<WebsocketApiController> logger, IStompPublisher stompPublisher, IBoardService boardService)
     {
         _logger = logger;
         _stompPublisher = stompPublisher;
-
+        _boardService = boardService;
     }
 
     [StompRoute("/api/request")]
-    public async void ApiCall([FromHeader(Name = "correlation-id")] string correlationId, [FromHeader(Name = "reply-to")] string replyTo, ApiRequest apiRequest)
+    public async Task ApiCall([FromHeader(Name = "correlation-id")] string correlationId, [FromHeader(Name = "reply-to")] string replyTo, ApiRequest apiRequest)
     {
         _logger.LogInformation("Received: {}, correlationId={}, replyTo={}, request={}", apiRequest, correlationId, replyTo, apiRequest);
 
-        var reply = ApiMethodDispatcher(apiRequest);
+        var reply = await ApiMethodDispatcher(apiRequest);
         _logger.LogInformation("Reply: {}", reply);
 
         await _stompPublisher.SendAsync(replyTo, reply, new Dictionary<string, object> {
@@ -32,19 +34,19 @@ public class WebsocketApiController
         });
     }
 
-    private ApiResponse ApiMethodDispatcher(ApiRequest apiRequest)
+    private async Task<ApiResponse> ApiMethodDispatcher(ApiRequest apiRequest)
     {
         ApiResponse reply;
         switch (apiRequest.Method)
         {
             case "get-board-items":
                 {
-                    reply = GetBoardItems(apiRequest.GetArg<string>(0)!);
+                    reply = await GetBoardItems(apiRequest.GetArg<string>(0)!);
                 }
                 break;
             case "get-board-messages":
                 {
-                    reply = GetLatestBoardMessages(apiRequest.GetArg<string>(0)!);
+                    reply = await GetLatestBoardMessages(apiRequest.GetArg<string>(0)!);
                 }
                 break;
             default:
@@ -53,22 +55,26 @@ public class WebsocketApiController
         return reply;
     }
 
-    private ApiResponse GetLatestBoardMessages(string boardName)
+    private async Task<ApiResponse> GetLatestBoardMessages(string boardName)
     {
         _logger.LogInformation("{} BoardName={}", nameof(GetLatestBoardMessages), boardName);
 
-        return new ApiResponse {
-            Body = Array.Empty<object>()
+        var result = await _boardService.GetLatestMessagesAsync(boardName, 20);
+        return new ApiResponse
+        {
+            Body = result,
         };
     }
 
 
-    private ApiResponse GetBoardItems(string boardName)
+    private async Task<ApiResponse> GetBoardItems(string boardName)
     {
         _logger.LogInformation("{} BoardName={}", nameof(GetBoardItems), boardName);
 
-        return new ApiResponse {
-            Body = Array.Empty<object>()
+        var result = await _boardService.GetBoardItemsByNameAsync(boardName);
+        return new ApiResponse
+        {
+            Body = result,
         };
     }
 

@@ -377,6 +377,7 @@ class BoardScene {
   async refreshBoard() {
     this._shapes = [];
     const response = await this._app.socket.rpcCall("get-board-items", this._app.boardName);
+    console.log(response);
     response.body.forEach((bi) => {
       this.addShapeToBoard(bi);
     });

@@ -2,7 +2,14 @@ using System.Reflection;
 
 using Stomp.Relay;
 
+using Websocket.Server.Installers;
+using Websocket.Server.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHealthChecks();
+builder.Services.AddSingleton<IBoardService, BoardService>();
+builder.Services.AddMongoDB(builder.Configuration);
 
 builder.Services.AddStompRelay(config =>
 {

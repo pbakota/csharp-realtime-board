@@ -152,6 +152,7 @@ export class BoardScene implements Scene {
     public async refreshBoard(): Promise<void> {
         this._shapes = [];
         const response = await this._app.socket.rpcCall<ApiResponse<BoardItemEntity[]>>('get-board-items', this._app.boardName);
+        console.log(response);
         response.body.forEach(bi => {
             this.addShapeToBoard(bi);
         });

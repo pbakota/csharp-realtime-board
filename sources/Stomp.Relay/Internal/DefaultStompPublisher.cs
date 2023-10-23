@@ -3,6 +3,8 @@ using System.Text.Json;
 
 using Microsoft.Extensions.Logging;
 
+using Stomp.Relay.Config;
+
 using Stomp.Relay.Messages;
 
 namespace Stomp.Relay;
@@ -12,11 +14,14 @@ internal class DefaultStompPublisher : IStompPublisher
     private readonly ILogger<DefaultStompPublisher> _logger;
 
     private readonly ITcpTransportAccessor _tcpTransportAccessor;
+    private readonly StompRelayConfig _config;
 
-    public DefaultStompPublisher(ILogger<DefaultStompPublisher> logger, ITcpTransportAccessor tcpTransportAccessor)
+
+    public DefaultStompPublisher(ILogger<DefaultStompPublisher> logger, ITcpTransportAccessor tcpTransportAccessor, StompRelayConfig config)
     {
         _logger = logger;
         _tcpTransportAccessor = tcpTransportAccessor;
+        _config = config;
     }
 
     public async Task SendAsync<T>(string topic, T message, Dictionary<string, object>? headers = null) where T : class
@@ -29,7 +34,10 @@ internal class DefaultStompPublisher : IStompPublisher
         }
         else
         {
-            body = JsonSerializer.Serialize(message);
+            body = JsonSerializer.Serialize(message, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = _config.NamingPolicy,
+            });
         }
         var contentLength = Encoding.UTF8.GetBytes(body).Length; // The content length is in octets
         var stompMessage = new StompMessageBuilder(StompCommand.Send)
@@ -41,5 +49,10 @@ internal class DefaultStompPublisher : IStompPublisher
         _logger.LogDebug("Message: {}", serialized);
         var bytes = Encoding.UTF8.GetBytes(serialized);
         await _tcpTransportAccessor.TcpTransport.SendAsync(bytes, CancellationToken.None);
+    }
+
+    private class LowerCaseNamingPolicy : JsonNamingPolicy
+    {
+        public override string ConvertName(string name) => name.ToLower();
     }
 }
