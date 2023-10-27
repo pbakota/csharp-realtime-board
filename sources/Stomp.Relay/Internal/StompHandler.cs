@@ -22,7 +22,9 @@ internal class StompHandler : IStompHandler
     private WebSocketTransport _webSocketTransport = null!;
     private TcpTransport _tcpTransport = null!;
 
-    public StompHandler(ILogger<StompHandler> logger, StompRelayConfig config, IStompMessageDispatcher dispatcher,
+    public StompHandler(ILogger<StompHandler> logger, 
+        StompRelayConfig config, 
+        IStompMessageDispatcher dispatcher,
         ITransportFactory<WebSocketTransport> wsTransportFactory,
         ITransportFactory<TcpTransport> tcpTransportFactory,
         ITcpTransportAccessor tcpTransportAccessor)

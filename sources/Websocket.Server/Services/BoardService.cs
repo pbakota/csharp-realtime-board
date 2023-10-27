@@ -78,6 +78,8 @@ public class BoardService : IBoardService
 
     public async Task<IEnumerable<BoardItemEntity>> GetBoardItemsByNameAsync(string boardName)
     {
+        // Here I could use $lookup and in that way reduce the number of queries, but that
+        // soulution has also its own weekness.
         var board = await _boardCollection.Find(x => x.Name == boardName).FirstOrDefaultAsync();
         return board is not null
             ? await _itemCollection.Find(x => x.BoardId == board.Id).ToListAsync()

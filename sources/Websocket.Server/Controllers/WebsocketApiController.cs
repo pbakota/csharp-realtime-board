@@ -66,10 +66,17 @@ public class WebsocketApiController
         };
     }
 
-
     private async Task<ApiResponse> GetBoardItems(string boardName)
     {
         _logger.LogInformation("{} BoardName={}", nameof(GetBoardItems), boardName);
+
+        var board = await _boardService.FindBoardByNameAsync(boardName);
+
+        // Auto create board if needed
+        if (board is null)
+        {
+            await _boardService.CreateBoardAsync(boardName);
+        }
 
         var result = await _boardService.GetBoardItemsByNameAsync(boardName);
         return new ApiResponse
@@ -77,5 +84,4 @@ public class WebsocketApiController
             Body = result,
         };
     }
-
 }

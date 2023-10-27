@@ -1,22 +1,28 @@
 using System.Reflection;
 
+using Microsoft.Extensions.FileProviders;
+
+using Steeltoe.Discovery.Client;
+
 using Stomp.Relay;
 
 using Websocket.Server.Installers;
 using Websocket.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDiscoveryClient();
 
 builder.Services.AddHealthChecks();
 builder.Services.AddSingleton<IBoardService, BoardService>();
 builder.Services.AddMongoDB(builder.Configuration);
 
+var relayConfig = builder.Configuration.GetSection("relay");
 builder.Services.AddStompRelay(config =>
 {
-    config.RelayHost = "playbox";
-    config.RelayPort = 61613;
-    config.EnableRelay = new[] { "/topic", "/queue" };
-    config.AppPrefixes = new[] { "/app", "/api" };
+    config.RelayHost = relayConfig["host"];
+    config.RelayPort = relayConfig.GetSection("port").Get<int>();
+    config.EnableRelay = relayConfig.GetSection("enable").Get<string[]>();
+    config.AppPrefixes = relayConfig.GetSection("prefix").Get<string[]>();
     config.SearchIn = new [] { Assembly.GetExecutingAssembly() };
 });
 
@@ -28,6 +34,9 @@ var webSocketOptions = new WebSocketOptions
 };
 
 app.UseStompRelay("/websocket", webSocketOptions);
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Environment.GetEnvironmentVariable("STATIC_FILE_LOCATION"))
+});
 
 app.Run();

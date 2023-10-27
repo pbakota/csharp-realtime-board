@@ -377,7 +377,6 @@ class BoardScene {
   async refreshBoard() {
     this._shapes = [];
     const response = await this._app.socket.rpcCall("get-board-items", this._app.boardName);
-    console.log(response);
     response.body.forEach((bi) => {
       this.addShapeToBoard(bi);
     });
@@ -440,7 +439,7 @@ class BoardScene {
         break;
       default:
         console.error(message);
-        throw `Invalid message type ${message.type}`;
+        throw "Invalid message type";
     }
   }
 }
@@ -1564,7 +1563,11 @@ class BoardSocket {
     this._rpcCalls = [];
     this._stompClient = new Client({
       brokerURL: brokerUrl,
-      reconnectDelay: 1000
+      reconnectDelay: 1000,
+      connectHeaders: {
+        login: "guest",
+        passcode: "guest"
+      }
     });
     this._rpcReplyQueueName = `/queue/replies-${v4_default()}`;
   }

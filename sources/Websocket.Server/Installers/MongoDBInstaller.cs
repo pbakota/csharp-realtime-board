@@ -40,7 +40,7 @@ public static class MongoDBInstaller
 
         // NOTE: Use camelCase convention for key names
         var conventionPack = new ConventionPack { new CamelCaseElementNameConvention(), new IgnoreExtraElementsConvention(true) };
-        // NOTE: typeof(Models.User).Namespace!) gives the namespace where models are reside
+        // NOTE: typeof(Models.BoardEntity).Namespace!) gives the namespace where models are reside
         ConventionRegistry.Register("camelCase", conventionPack, t => t.FullName!.StartsWith(typeof(BoardEntity).Namespace!));
 
         return services;

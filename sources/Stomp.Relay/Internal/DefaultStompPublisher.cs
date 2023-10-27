@@ -16,7 +16,6 @@ internal class DefaultStompPublisher : IStompPublisher
     private readonly ITcpTransportAccessor _tcpTransportAccessor;
     private readonly StompRelayConfig _config;
 
-
     public DefaultStompPublisher(ILogger<DefaultStompPublisher> logger, ITcpTransportAccessor tcpTransportAccessor, StompRelayConfig config)
     {
         _logger = logger;
@@ -26,7 +25,8 @@ internal class DefaultStompPublisher : IStompPublisher
 
     public async Task SendAsync<T>(string topic, T message, Dictionary<string, object>? headers = null) where T : class
     {
-        string body = string.Empty;
+        var body = string.Empty;
+
         if (message.GetType().IsPrimitive || message is string)
         {
             // Do not serialize primitive types (int, double, etc) and strings
@@ -49,10 +49,5 @@ internal class DefaultStompPublisher : IStompPublisher
         _logger.LogDebug("Message: {}", serialized);
         var bytes = Encoding.UTF8.GetBytes(serialized);
         await _tcpTransportAccessor.TcpTransport.SendAsync(bytes, CancellationToken.None);
-    }
-
-    private class LowerCaseNamingPolicy : JsonNamingPolicy
-    {
-        public override string ConvertName(string name) => name.ToLower();
     }
 }
