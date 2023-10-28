@@ -10,7 +10,12 @@ using Websocket.Server.Installers;
 using Websocket.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDiscoveryClient();
+
+if (builder.Environment.IsProduction())
+{
+    // Use Eureka only in "production"
+    builder.Services.AddDiscoveryClient();
+}
 
 builder.Services.AddHealthChecks();
 builder.Services.AddSingleton<IBoardService, BoardService>();
@@ -23,7 +28,7 @@ builder.Services.AddStompRelay(config =>
     config.RelayPort = relayConfig.GetSection("port").Get<int>();
     config.EnableRelay = relayConfig.GetSection("enable").Get<string[]>();
     config.AppPrefixes = relayConfig.GetSection("prefix").Get<string[]>();
-    config.SearchIn = new [] { Assembly.GetExecutingAssembly() };
+    config.SearchIn = new[] { Assembly.GetExecutingAssembly() };
 });
 
 var app = builder.Build();
@@ -34,9 +39,16 @@ var webSocketOptions = new WebSocketOptions
 };
 
 app.UseStompRelay("/websocket", webSocketOptions);
-app.UseStaticFiles(new StaticFileOptions
+if (app.Environment.IsDevelopment())
 {
-    FileProvider = new PhysicalFileProvider(Environment.GetEnvironmentVariable("STATIC_FILE_LOCATION"))
-});
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "../app/public")),
+    });
+}
+else
+{
+    app.UseStaticFiles();
+}
 
 app.Run();
