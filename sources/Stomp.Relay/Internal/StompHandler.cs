@@ -1,10 +1,12 @@
 using System.Net.Sockets;
 using System.Net.WebSockets;
+using System.Text;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 using Stomp.Relay.Config;
+using Stomp.Relay.Messages;
 
 using Stomp.Relay.Transport;
 
@@ -22,8 +24,8 @@ internal class StompHandler : IStompHandler
     private WebSocketTransport _webSocketTransport = null!;
     private TcpTransport _tcpTransport = null!;
 
-    public StompHandler(ILogger<StompHandler> logger, 
-        StompRelayConfig config, 
+    public StompHandler(ILogger<StompHandler> logger,
+        StompRelayConfig config,
         IStompMessageDispatcher dispatcher,
         ITransportFactory<WebSocketTransport> wsTransportFactory,
         ITransportFactory<TcpTransport> tcpTransportFactory,
@@ -41,7 +43,7 @@ internal class StompHandler : IStompHandler
     public async Task Handle(WebSocket socket, HttpContext context, CancellationToken token)
     {
         _webSocketTransport = _wsTransportFactory.CreateTransport(socket);
-        _tcpTransport = _tcpTransportFactory.CreateTransport(_config.RelayHost, _config.RelayPort);
+        _tcpTransport = _tcpTransportFactory.CreateTransport(_config.BrokerHost, _config.BrokerPort);
 
         // Make it available as a standalone service
         _tcpTransportAccessor.TcpTransport = _tcpTransport;
@@ -53,7 +55,7 @@ internal class StompHandler : IStompHandler
             var relay = DoRelay(token);
             var dispatch = DoDispatcher(context, token);
 
-            _logger.LogInformation("Connected to broker relay {}:{}", _config.RelayHost, _config.RelayPort);
+            _logger.LogInformation("Connected to broker {}:{}", _config.BrokerHost, _config.BrokerPort);
 
             Task.WaitAll(new Task[] { relay, dispatch }, cancellationToken: token);
         }
@@ -83,9 +85,15 @@ internal class StompHandler : IStompHandler
                 break;
             }
 
-            if (IsPing(request) || !await _dispatcher.DispatchMessageAsync(context, request, token))
+            var isConnect = IsConnect(request);
+            if (IsPing(request) || isConnect || !await _dispatcher.DispatchMessageAsync(context, request, token))
             {
                 // If the request was not handled then forward it to broker
+
+                if (isConnect && !string.IsNullOrEmpty(_config.BrokerLogin))
+                {
+                    request = InjectLogin(request);
+                }
                 await _tcpTransport.SendAsync(request, token);
             }
         }
@@ -93,6 +101,25 @@ internal class StompHandler : IStompHandler
 
     private static bool IsPing(ArraySegment<byte> request)
         => request[0] == '\n' || request[0] == '\r';
+
+    private static bool IsConnect(ArraySegment<byte> request)
+        => request[0] == 'C' &&
+           request[1] == 'O' &&
+           request[2] == 'N' &&
+           request[3] == 'N' &&
+           request[4] == 'E' &&
+           request[5] == 'C' &&
+           request[6] == 'T';
+
+    private ArraySegment<byte> InjectLogin(ArraySegment<byte> request)
+    {
+        var newMessage = new StompMessageBuilder(StompMessageSerializer.Deserialize(request))
+            .Header("login", _config.BrokerLogin)
+            .Header("passcode", _config.BrokerPasscode)
+            .WithoutBody();
+
+        return Encoding.UTF8.GetBytes(StompMessageSerializer.Serialize(newMessage));
+    }
 
     private async Task DoRelay(CancellationToken token)
     {

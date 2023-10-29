@@ -1563,11 +1563,7 @@ class BoardSocket {
     this._rpcCalls = [];
     this._stompClient = new Client({
       brokerURL: brokerUrl,
-      reconnectDelay: 1000,
-      connectHeaders: {
-        login: "guest",
-        passcode: "guest"
-      }
+      reconnectDelay: 1000
     });
     this._rpcReplyQueueName = `/queue/replies-${v4_default()}`;
   }

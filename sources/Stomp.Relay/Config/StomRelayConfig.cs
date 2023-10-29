@@ -5,8 +5,10 @@ namespace Stomp.Relay.Config;
 
 public record StompRelayConfig
 {
-    public string RelayHost { get; set; } = "localhost";
-    public int RelayPort { get; set; } = 61613;
+    public string BrokerHost { get; set; } = "localhost";
+    public int BrokerPort { get; set; } = 61613;
+    public string BrokerLogin { get;set;} = "guest";
+    public string BrokerPasscode { get;set;} = "guest";
     public string[] AppPrefixes { get; set; } = Array.Empty<string>();
     public string[] EnableRelay { get; set; } = Array.Empty<string>();
     public Assembly[] SearchIn { get; set; } = Array.Empty<Assembly>();

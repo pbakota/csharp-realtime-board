@@ -27,9 +27,9 @@ internal class DefaultStompPublisher : IStompPublisher
     {
         var body = string.Empty;
 
-        if (message.GetType().IsPrimitive || message is string)
+        if (message is string)
         {
-            // Do not serialize primitive types (int, double, etc) and strings
+            // Do not serialize strings
             body = message.ToString()!;
         }
         else
@@ -46,7 +46,7 @@ internal class DefaultStompPublisher : IStompPublisher
             .Header("content-length", contentLength)
             .WithBody(body);
         var serialized = StompMessageSerializer.Serialize(stompMessage);
-        _logger.LogDebug("Message: {}", serialized);
+        _logger.LogDebug("Sendig message: {}", serialized);
         var bytes = Encoding.UTF8.GetBytes(serialized);
         await _tcpTransportAccessor.TcpTransport.SendAsync(bytes, CancellationToken.None);
     }

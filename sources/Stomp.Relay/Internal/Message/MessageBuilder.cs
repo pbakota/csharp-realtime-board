@@ -4,13 +4,24 @@ internal class StompMessageBuilder
 {
     private readonly string _command;
 
-    private readonly IList<KeyValuePair<string, IHeaderValue>> _headers = new List<KeyValuePair<string, IHeaderValue>>();
+    private readonly Dictionary<string, IHeaderValue> _headers = new();
 
     public StompMessageBuilder(string command) => _command = command;
+    public StompMessageBuilder(IStompMessage message)
+    {
+        _command = message.Command;
+        foreach (var h in message.Headers)
+        {
+            Header(h.Key, h.Value.Value!);
+        }
+    }
 
     public StompMessageBuilder Header(string key, object value)
     {
-        _headers.Add(new KeyValuePair<string, IHeaderValue>(key, new HeaderValue(value)));
+        if(_headers.ContainsKey(key))
+            _headers[key] = new HeaderValue(value);
+        else
+            _headers.Add(key, new HeaderValue(value));
         return this;
     }
 

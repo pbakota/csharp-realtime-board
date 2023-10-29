@@ -37,12 +37,6 @@ export class BoardSocket {
         this._stompClient = new Client({
             brokerURL: brokerUrl,
             reconnectDelay: 1000,
-            // Typically, login, passcode and vhost
-            // Adjust these for your broker
-            connectHeaders: {
-                login: "guest",
-                passcode: "guest"
-            },
         });
         this._rpcReplyQueueName = `/queue/replies-${uuidv4()}`;
     }

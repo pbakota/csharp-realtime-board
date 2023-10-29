@@ -24,8 +24,8 @@ builder.Services.AddMongoDB(builder.Configuration);
 var relayConfig = builder.Configuration.GetSection("relay");
 builder.Services.AddStompRelay(config =>
 {
-    config.RelayHost = relayConfig["host"];
-    config.RelayPort = relayConfig.GetSection("port").Get<int>();
+    config.BrokerHost = relayConfig["brokerHost"];
+    config.BrokerPort = relayConfig.GetSection("brokerPort").Get<int>();
     config.EnableRelay = relayConfig.GetSection("enable").Get<string[]>();
     config.AppPrefixes = relayConfig.GetSection("prefix").Get<string[]>();
     config.SearchIn = new[] { Assembly.GetExecutingAssembly() };

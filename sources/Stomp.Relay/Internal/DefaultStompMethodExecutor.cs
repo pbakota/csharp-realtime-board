@@ -1,7 +1,4 @@
-
-using System.Diagnostics;
 using System.Reflection;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 
 using Microsoft.AspNetCore.Mvc;
@@ -113,7 +110,7 @@ internal class DefaultStompMethodExecutor : IStompMethodExecutor
 
     private void GetStompControllers()
     {
-        // TODO: Replace static list of assemblies with a dynamic generator like .NOT does for controllers.
+        // TODO: Replace the static list of assemblies with a dynamic generator, like .NET does for controllers.
         var controllers = StompHandlerReflectionHelper.GetStompMethods(_config.SearchIn);
         foreach (var (controller, method) in controllers)
         {
