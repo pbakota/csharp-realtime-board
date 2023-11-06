@@ -21,8 +21,8 @@ internal class StompHandler : IStompHandler
     private readonly ITransportFactory<TcpTransport> _tcpTransportFactory = null!;
     private readonly ITcpTransportAccessor _tcpTransportAccessor;
 
-    private WebSocketTransport _webSocketTransport = null!;
-    private TcpTransport _tcpTransport = null!;
+    private IStompTransport _webSocketTransport = null!;
+    private IStompTransport _tcpTransport = null!;
 
     public StompHandler(ILogger<StompHandler> logger,
         StompRelayConfig config,
@@ -59,7 +59,7 @@ internal class StompHandler : IStompHandler
 
             Task.WaitAll(new Task[] { relay, dispatch }, cancellationToken: token);
         }
-        // Ignore cancelled exception and take it as a normal exit
+        // Ignore canceled exception and take it as a normal exit
         catch (OperationCanceledException) { }
         catch (SocketException)
         {
@@ -89,7 +89,6 @@ internal class StompHandler : IStompHandler
             if (IsPing(request) || isConnect || !await _dispatcher.DispatchMessageAsync(context, request, token))
             {
                 // If the request was not handled then forward it to broker
-
                 if (isConnect && !string.IsNullOrEmpty(_config.BrokerLogin))
                 {
                     request = InjectLogin(request);
@@ -100,10 +99,11 @@ internal class StompHandler : IStompHandler
     }
 
     private static bool IsPing(ArraySegment<byte> request)
-        => request[0] == '\n' || request[0] == '\r';
+        => request.Count >= 1 && (request[0] == '\n' || request[0] == '\r');
 
     private static bool IsConnect(ArraySegment<byte> request)
-        => request[0] == 'C' &&
+        => request.Count >= 7 && 
+           request[0] == 'C' &&
            request[1] == 'O' &&
            request[2] == 'N' &&
            request[3] == 'N' &&

@@ -6,7 +6,7 @@ internal class TcpTransportAccessor : ITcpTransportAccessor
 {
     private static readonly AsyncLocal<TcpTransportHolder> _tcpTransportCurrent = new();
 
-    public TcpTransport TcpTransport
+    public IStompTransport TcpTransport
     {
         get
         {
@@ -30,6 +30,6 @@ internal class TcpTransportAccessor : ITcpTransportAccessor
 
     private class TcpTransportHolder
     {
-        public TcpTransport? TcpTransport;
+        public IStompTransport? TcpTransport;
     }
 }

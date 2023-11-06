@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Websocket.Server", "Websock
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stomp.Relay", "Stomp.Relay\Stomp.Relay.csproj", "{EA36737A-ACA5-475A-88CB-4152C41448D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stomp.Relay.Tests", "Stomp.Relay.Tests\Stomp.Relay.Tests.csproj", "{8C279633-8AEE-4F0D-A0E1-A308988375BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,5 +30,9 @@ Global
 		{EA36737A-ACA5-475A-88CB-4152C41448D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA36737A-ACA5-475A-88CB-4152C41448D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA36737A-ACA5-475A-88CB-4152C41448D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C279633-8AEE-4F0D-A0E1-A308988375BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C279633-8AEE-4F0D-A0E1-A308988375BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C279633-8AEE-4F0D-A0E1-A308988375BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C279633-8AEE-4F0D-A0E1-A308988375BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

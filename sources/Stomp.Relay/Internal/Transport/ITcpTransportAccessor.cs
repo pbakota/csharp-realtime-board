@@ -4,5 +4,5 @@ namespace Stomp.Relay;
 
 internal interface ITcpTransportAccessor
 {
-    TcpTransport TcpTransport { get; set; }
+    IStompTransport TcpTransport { get; set; }
 }

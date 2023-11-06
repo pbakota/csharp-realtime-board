@@ -2,19 +2,6 @@ using System.Text.Json;
 
 namespace Stomp.Relay.Messages;
 
-public interface IHeaderValue {
-    string? AsString();
-    int? AsInt();
-
-    object? Value { get; set; }
-}
-public interface IStompMessage
-{
-    string Command { get; }
-    IDictionary<string, IHeaderValue> Headers { get; }
-    string Body { get; }
-}
-
 internal class HeaderValue : IHeaderValue
 {
     private object? _value;

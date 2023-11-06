@@ -1,24 +1,22 @@
-using System.IO.Pipelines;
 using System.Net.WebSockets;
 
 namespace Stomp.Relay.Transport;
 
 internal class WebSocketTransport : IStompTransport
 {
-    private PipeReader Input { get => _pipe.Reader; }
     private WebSocket? _webSocket;
-    private readonly Pipe _pipe;
+
+    public WebSocketTransport() { }
 
     public WebSocketTransport(WebSocket webSocket)
     {
         _webSocket = webSocket;
-        _pipe = new Pipe();
     }
 
     public async Task<ArraySegment<byte>> ReadAsync(CancellationToken token)
     {
         WebSocketReceiveResult receiveResult;
-        var buffer = new byte[1024*4];
+        var buffer = new byte[1024 * 4];
         using var ms = new MemoryStream();
         do
         {

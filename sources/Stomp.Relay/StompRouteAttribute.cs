@@ -1,6 +1,5 @@
 namespace Stomp.Relay;
 
-
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 public class StompRouteAttribute : Attribute
 {

@@ -18,3 +18,6 @@ package-websocket:
 package-app:
 	tar -zcvf ../releases/app.tgz -C app/public/ .
 
+test:
+	dotnet test --collect:"XPlat Code Coverage" && reportgenerator -reports:"$(PWD)/Stomp.Relay.Tests/TestResults/*/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+

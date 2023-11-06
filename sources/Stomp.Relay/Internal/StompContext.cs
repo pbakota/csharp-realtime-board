@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Http;
 
-using Stomp.Relay.Messages;
-
 namespace Stomp.Relay;
 
-public class StompContext : IStompContext
+internal class StompContext : IStompContext
 {
     public HttpContext HttpContext { get; private set; }
     public IStompMessage StompMessage { get; private set; }

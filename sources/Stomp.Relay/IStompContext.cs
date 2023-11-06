@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Http;
 
-using Stomp.Relay.Messages;
-
 namespace Stomp.Relay;
 
 public interface IStompContext

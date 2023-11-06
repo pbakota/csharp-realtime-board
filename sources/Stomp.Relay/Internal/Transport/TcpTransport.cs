@@ -11,6 +11,8 @@ internal class TcpTransport : IStompTransport
     private NetworkStream? _stream;
     private bool _closed;
 
+    #pragma warning disable CS8618
+    public TcpTransport() {}
 
     public TcpTransport(string host, int port)
     {

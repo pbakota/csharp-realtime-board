@@ -32,7 +32,7 @@ internal class DefaultStompMethodExecutor : IStompMethodExecutor
         GetStompControllers();
     }
 
-    public async Task Execute(StompContext context)
+    public async Task Execute(IStompContext context)
     {
         _logger.LogDebug("Executing destination: {}", context.Destination);
 
@@ -89,7 +89,7 @@ internal class DefaultStompMethodExecutor : IStompMethodExecutor
         }
     }
 
-    private StompControllerActionDescriptor? FindMatchingMethod(StompContext context)
+    private StompControllerActionDescriptor? FindMatchingMethod(IStompContext context)
     {
         foreach (var kvp in _methods)
         {
@@ -125,7 +125,7 @@ internal class DefaultStompMethodExecutor : IStompMethodExecutor
         }
     }
 
-    private RouteValueDictionary? MatchTemplate(StompContext context, string routeTemplate, string requestPath)
+    private RouteValueDictionary? MatchTemplate(IStompContext context, string routeTemplate, string requestPath)
     {
         var template = TemplateParser.Parse(routeTemplate);
         var matcher = new TemplateMatcher(template, GetDefaults(template));
