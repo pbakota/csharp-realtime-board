@@ -23,13 +23,16 @@ public interface IBoardService
 
 public class BoardService : IBoardService
 {
+    private readonly ILogger<BoardService> _logger;
     private readonly IMongodbContext _dbContext;
     private readonly IMongoCollection<BoardEntity> _boardCollection;
     private readonly IMongoCollection<BoardItemEntity> _itemCollection;
     private readonly IMongoCollection<UserMessageEntity> _messageCollection;
 
-    public BoardService(IMongodbContext dbContext)
+    public BoardService(ILogger<BoardService> logger, IMongodbContext dbContext)
     {
+        _logger = logger;
+
         _dbContext = dbContext;
 
         _boardCollection = _dbContext.GetCollection<BoardEntity>("boards");
@@ -113,6 +116,7 @@ public class BoardService : IBoardService
         var board = await _boardCollection.Find(x => x.Name == boardName).FirstOrDefaultAsync();
         if (board is null)
         {
+            _logger.LogWarning("Board {} could not be found", boardName);
             return;
         }
 

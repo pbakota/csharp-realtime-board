@@ -20,7 +20,6 @@ public class WebsocketController
         _logger = logger;
         _stompPublisher = stompPublisher;
         _boardService = boardService;
-
     }
 
     [StompRoute("/incoming/{boardId}")]
