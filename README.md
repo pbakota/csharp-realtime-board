@@ -8,16 +8,15 @@ The purpose of the demo project is to demonstrate how to implement a simple real
 
 The websocket server in production includes Eureka discovery client and automatically register itself on Eureka server, and it is ready to be used with load balancer.
 
-For more information about the architecture see the parent project. https://github.com/pbakota/java-realtime-board
+For more information about the architecture, see the parent project. https://github.com/pbakota/java-realtime-board
 
 
 ## Implementation
 
-The project was implemented in .NET 6 with very little depenedency. It uses MongoDb for storage and Eureka client for automatic discovery. The project also has simple STOMP relay implementation which can be used as a separate 
-component for other projects as well. See more information about the relay in section "Stomp.Relay".
+The project was implemented in .NET 6 with very little dependency. It uses MongoDB for storage and Eureka client for automatic discovery. The project also has a simple STOMP relay implementation which can be used as a separate component for other projects as well. See more information about the relay in section "Stomp.Relay".
 
 The project was designed to be 100% compatible with the Java counterpart (see: https://github.com/pbakota/java-realtime-board), that means all data structures and communication protocols are the same. Also implements a simple
-RPC api that can be used to replace regular REST end point calls (altough using REST is still possible). All client<->server communication can be done trough websocket. The project has two sub projects. 
+RPC API that can be used to replace regular REST end point calls (although using REST is still possible). All client<->server communication can be done trough websocket. The project has two subprojects. 
 
 ### WebsocketServer
 
@@ -44,7 +43,7 @@ public class WebsocketController
 
 What is STOMP? You can read about STOMP here: https://stomp.github.io/stomp-specification-1.2.html
 
-This is a very simple relay implementation. It does not implement full STOMP server. It is only capable to forward (relay) STOMP messages from client to to message broker and to accept and route direct messages to the appropriate controllers.
+This is a very simple relay implementation. It does not implement full STOMP server. It is only capable to forward (relay) STOMP messages from client to message broker and to accept and route direct messages to the appropriate controllers.
 
 
 ### The usage
@@ -99,7 +98,7 @@ app.UseStompRelay("/websocket", webSocketOptions);
 
 For the client part, STOMP-js is used (https://stomp-js.github.io/). But any standard STOMP client can be used. 
 
-The application client side is written in TypeScript with excellent `bun` JavaScript Toolkit (https://bun.sh/). Plese refere the `socket.ts` for the client side implementation of the communication.
+The application client side is written in TypeScript with excellent `bun` JavaScript Toolkit (https://bun.sh/). Please refer to the `socket.ts` for the client side implementation of the communication.
 
 
 ### Supported message brokers
@@ -108,7 +107,7 @@ The **Stomp.Relay** was tested with RabbitMQ and ActiveMQ, but it could work wit
 
 ## How to build
 
-The project uses GNU makefile to execute predefined targets. To build the whole project in debug mode then execute from the "sources" folder:
+The project uses GNU Makefile to execute predefined targets. To build the whole project in debug mode, then execute from the "sources" folder:
 
 `$ make`
 
@@ -124,12 +123,12 @@ To create package for the websocket server:
 
 `$ make package-websocket`
 
-To create package for the client side:
+To create a package for the client side:
 
 `$ make package-app`
 
 
-All packages for the deployment will be create in the ${project.root}/releases.
+All packages for the deployment will be created in the ${project.root}/releases.
 
 ## Docker deploy
 
@@ -137,7 +136,7 @@ The project contains "docker" folder, which contains all the necessary files for
 
 Copy the *.tgz files from ${project.root}/releases folder into the docker folder before you start the container.
 
-The "docker" folder also contains a GNU Makefile for easier maintenance. There are couple of targets:
+The "docker" folder also contains a GNU Makefile for easier maintenance. There are a couple of targets:
 
 1. `$ make start` = To start the application with docker compose
 1. `$ make stop` = To stop the docker container
@@ -148,8 +147,8 @@ Please make it sure that you have updated the config files. The docker stack doe
 All configuration files are in the "config" folder. There are two:
 
 1. `app.config.js`
-    This file is used by the client side and it only contains the URI for the websocket endpoint
+    This file is used by the client side, and it only contains the URI for the websocket endpoint
 
 1. `appsettings.json`
-    Thi config file is for the server-side websocket server
+    This config file is for the server-side websocket server
 
