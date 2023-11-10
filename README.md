@@ -4,7 +4,7 @@ The purpose of the demo project is to demonstrate how to implement a simple real
 
 ## Architecture
 
-![Alt](http://127.0.0.1:8001/figures/figure-1.svg)
+![Alt](https://github.com/pbakota/csharp-realtime-board/blob/main/figures/figure-1.svg)
 
 The websocket server in production includes Eureka discovery client and automatically register itself on Eureka server, and it is ready to be used with load balancer.
 
